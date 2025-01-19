@@ -82,11 +82,6 @@ class UserResource extends Resource
         ;
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::where('role', User::ROLE_USER)->count();
-    }
-
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
