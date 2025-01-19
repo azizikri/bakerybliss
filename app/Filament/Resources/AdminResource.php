@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\AdminResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -52,7 +53,40 @@ class AdminResource extends Resource
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->hidden(fn (User $record): bool => auth()->id() === $record->id)
+                    ->authorize(fn (User $record): bool => auth()->id() !== $record->id),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Tables\Actions\DeleteBulkAction $action) {
+                            $selectedRecords = $action->getRecords();
+
+                            if ($selectedRecords->contains(auth()->id())) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Cannot delete your own account')
+                                    ->send();
+
+                                $action->halt();
+                            }
+                        }),
+                ]),
             ]);
+        ;
     }
 
     public static function getNavigationBadge(): ?string
