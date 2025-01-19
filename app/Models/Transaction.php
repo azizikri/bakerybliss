@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Transaction extends Model
 {
@@ -32,9 +33,12 @@ class Transaction extends Model
 
     protected $guarded = ['id'];
 
-    public function status()
+    protected function status(): Attribute
     {
-        return self::STATUS[$this->status] ?? "Unknown";
+        return Attribute::make(
+            get: fn (string $value) => self::STATUS[$value] ?? "Unknown",
+            set: fn (string $value) => array_search($value, self::STATUS)
+        );
     }
 
 }
