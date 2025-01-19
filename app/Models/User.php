@@ -71,4 +71,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return in_array($this->role, $roles);
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
 }
