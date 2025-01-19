@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class BankResource extends Resource
 {
     protected static ?string $model = Bank::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationGroup = 'Data Management';
+    protected static ?int $navigationSort = 2;
+    protected static bool $shouldRegisterNavigation = true;
 
     public static function form(Form $form): Form
     {

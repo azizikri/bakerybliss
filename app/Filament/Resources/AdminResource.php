@@ -23,9 +23,6 @@ class AdminResource extends Resource
     protected static bool $shouldRegisterNavigation = true;
     public static ?string $label = 'Admins';
 
-
-    protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
-
     public static function form(Form $form): Form
     {
         return $form
