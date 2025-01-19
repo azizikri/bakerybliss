@@ -24,6 +24,18 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('tags')
+                    ->multiple()
+                    ->relationship('tags', 'name')
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->preload()
+                    ->searchable()
+                    ->columnSpanFull(),
+
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -67,7 +79,9 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-
+                Tables\Columns\TagsColumn::make('tags.name')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('stock')
                     ->sortable(),
 
@@ -103,6 +117,12 @@ class ProductResource extends Resource
                         'Active' => 'Active',
                         'Inactive' => 'Inactive',
                     ]),
+                SelectFilter::make('tags')
+                    ->multiple()
+                    ->relationship('tags', 'name')
+                    ->preload()
+                    ->searchable(),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

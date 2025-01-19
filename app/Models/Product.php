@@ -48,4 +48,9 @@ class Product extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }
