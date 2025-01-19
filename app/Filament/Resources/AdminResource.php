@@ -100,12 +100,6 @@ class AdminResource extends Resource
             ->where('role', User::ROLE_ADMIN);
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['role'] = User::ROLE_ADMIN;
-        return $data;
-    }
-
     public static function getPages(): array
     {
         return [

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\UserResource\RelationManagers\AccountsRelationManager;
+use App\Filament\Resources\UserResource\RelationManagers\AddressesRelationManager;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
@@ -37,7 +39,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('phone')
                     ->tel()
                     ->required()
-                    ->mask('+99 9999 9999')
+                    ->mask('+99 999 9999 9999')
                     ->prefixIcon('heroicon-m-phone')
                     ->placeholder('+62 5555 5555'),
                 Forms\Components\TextInput::make('password')
@@ -91,12 +93,6 @@ class UserResource extends Resource
             ->where('role', User::ROLE_USER);
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['role'] = User::ROLE_USER;
-        return $data;
-    }
-
     public static function getPages(): array
     {
         return [
@@ -105,4 +101,13 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
+    public static function getRelations(): array
+    {
+        return [
+            AddressesRelationManager::class,
+            AccountsRelationManager::class,
+        ];
+    }
+
 }
