@@ -58,12 +58,12 @@ class AdminPanelProvider extends PanelProvider
                 AdminAccess::class,
             ])->navigationGroups([
                     NavigationGroup::make()
-                        ->label('User Management')
-                        ->icon('heroicon-o-users')
-                        ->collapsed(),
-                    NavigationGroup::make()
                         ->label('Data Management')
                         ->icon('heroicon-o-circle-stack')
+                        ->collapsed(),
+                    NavigationGroup::make()
+                        ->label('User Management')
+                        ->icon('heroicon-o-users')
                         ->collapsed(),
                 ]);
         ;
