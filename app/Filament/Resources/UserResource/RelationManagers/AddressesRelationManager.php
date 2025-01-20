@@ -68,6 +68,9 @@ class AddressesRelationManager extends RelationManager
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
             ])

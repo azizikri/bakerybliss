@@ -18,7 +18,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(model: User::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(Address::class)->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(Account::class)->nullable()->constrained()->nullOnDelete();
             $table->string('transaction_id')->unique();

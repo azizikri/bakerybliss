@@ -7,13 +7,21 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
+    public const SIZES = [
+        'small' => 'Small',
+        'medium' => 'Medium',
+        'large' => 'Large',
+        'extra_large' => 'Extra Large',
+    ];
+
     protected $fillable = [
         'name',
         'stock',
         'images',
         'description',
         'price',
-        'status'
+        'status',
+        'size'
     ];
 
     protected $guarded = [
@@ -34,6 +42,14 @@ class Product extends Model
         );
     }
 
+    protected function size(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => self::SIZES[$value] ?? "Unknown",
+            set: fn (string $value) => array_key_exists($value, self::SIZES) ? $value : array_keys(self::SIZES)[0]
+        );
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', 1);
@@ -44,13 +60,20 @@ class Product extends Model
         return $query->where('status', 0);
     }
 
-    public function transactions()
-    {
-        return $this->hasMany(Transaction::class);
-    }
-
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    // public function transactions()
+    // {
+    //     return $this->belongsToMany(Transaction::class, 'product_transaction')
+    //         ->withPivot(['quantity', 'price_on_purchase', 'sub_total'])
+    //         ->withTimestamps();
+    // }
+
+    public function transactions()
+    {
+        return $this->hasMany(ProductTransaction::class);
     }
 }

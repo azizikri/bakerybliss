@@ -45,6 +45,13 @@ class ProductResource extends Resource
                     ->numeric()
                     ->minValue(0),
 
+                Forms\Components\Select::make('size')
+                    ->options(array_combine(array_keys(Product::SIZES), Product::SIZES))
+                    ->required()
+                    ->afterStateHydrated(function ($state) {
+                        return (string) $state;
+                    }),
+
                 FileUpload::make('images')
                     ->multiple()
                     ->directory('products')
@@ -81,7 +88,10 @@ class ProductResource extends Resource
                     ->searchable(),
                 Tables\Columns\TagsColumn::make('tags.name')
                     ->searchable()
+                    ->default('No Tags')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('size')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('stock')
                     ->sortable(),
 

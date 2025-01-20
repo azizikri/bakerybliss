@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->json('images');
             $table->text('description');
             $table->integer('price');
+            $table->enum('size', array_keys(Product::SIZES))->default(array_keys(Product::SIZES)[0]);
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

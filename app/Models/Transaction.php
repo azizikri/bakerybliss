@@ -21,8 +21,7 @@ class Transaction extends Model
         'user_id',
         'address_id',
         'transaction_id',
-        'bank_id',
-        'account_number',
+        'account_id',
         'payment_proof',
         'status',
         'subtotal',
@@ -37,8 +36,35 @@ class Transaction extends Model
     {
         return Attribute::make(
             get: fn (string $value) => self::STATUS[$value] ?? "Unknown",
-            set: fn (string $value) => array_search($value, self::STATUS)
+            set: fn (string $value) => array_key_exists($value, self::STATUS) ? $value : array_keys(self::STATUS)[0]
         );
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    // public function products()
+    // {
+    //     return $this->belongsToMany(Product::class, 'product_transaction')
+    //         ->withPivot(['quantity', 'price_on_purchase', 'sub_total'])
+    //         ->withTimestamps();
+    // }
+
+    public function products()
+    {
+        return $this->hasMany(ProductTransaction::class);
     }
 
 }
