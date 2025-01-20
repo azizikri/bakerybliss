@@ -25,9 +25,10 @@ return new class extends Migration
             $table->text('payment_proof');
             $table->enum('status', array_keys(Transaction::STATUS))->default(array_keys(Transaction::STATUS)[0]);
             $table->integer('subtotal')->default(0);
-            $table->integer('shipping')->default(20_000);
+            $table->integer('shipping');
             $table->integer('total')->default(0);
             $table->text('notes')->nullable();
+            $table->enum('delivery_method', array_keys(Transaction::DELIVERY_METHODS))->nullable();
             $table->timestamps();
         });
     }

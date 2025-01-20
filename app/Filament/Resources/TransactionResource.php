@@ -6,10 +6,12 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TransactionResource\Pages;
 
@@ -61,6 +63,9 @@ class TransactionResource extends Resource
                     ->searchable(),
 
                 Forms\Components\TextInput::make('transaction_id')
+                    ->default(fn () => Transaction::generateTransactionId())
+                    ->disabled()
+                    ->dehydrated(true)
                     ->required()
                     ->unique(ignoreRecord: true),
 
@@ -98,12 +103,13 @@ class TransactionResource extends Resource
                             ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                                 $product = Product::find($state);
                                 if ($product) {
+                                    $set('quantity', 1);
                                     $set('price_on_purchase', $product->price);
-                                    $quantity = $get('quantity') ?? 1;
-                                    $set('sub_total', $product->price * $quantity);
-                                    static::updateTotals($set, $get);
+                                    $set('sub_total', $product->price);
                                 }
-                            }),
+                            })
+                            ->distinct(),
+
                         Forms\Components\TextInput::make('quantity')
                             ->numeric()
                             ->required()
@@ -160,6 +166,9 @@ class TransactionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('products.product.name')
+                    ->listWithLineBreaks()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('subtotal')
                     ->money('IDR')
                     ->sortable(),
@@ -169,6 +178,19 @@ class TransactionResource extends Resource
                 Tables\Columns\TextColumn::make('total')
                     ->money('IDR')
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('payment_proof')
+                    ->circular()
+                    ->height(40)
+                    ->action(
+                        Tables\Actions\Action::make('view_payment_proof')
+                            ->modalContent(fn ($record) => view(
+                                'filament.pages.actions.view-image',
+                                ['imageUrl' => Storage::url($record->payment_proof)]
+                            ))
+                            ->modalWidth('xl')
+                            ->modalSubmitAction(false)
+                            ->modalCancelAction(false)
+                    ),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
@@ -194,6 +216,42 @@ class TransactionResource extends Resource
                     })
             ])
             ->actions([
+                Tables\Actions\Action::make('change_status')
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->options(Transaction::STATUS)
+                            ->required()
+                    ])
+                    ->requiresConfirmation()
+                    ->action(function (Transaction $record, array $data): void {
+                        $record->update(['status' => $data['status']]);
+                    })
+                    ->label(fn ($record) => $record->status),
+                Tables\Actions\Action::make('set_delivery')
+                    ->form([
+                        Forms\Components\Select::make('delivery_method')
+                            ->options(Transaction::DELIVERY_METHODS)
+                            ->required()
+                    ])
+                    ->requiresConfirmation()
+                    ->action(function (Transaction $record, array $data): void {
+                        $record->update(['delivery_method' => $data['delivery_method']]);
+                    })
+                    ->label(fn ($record) => $record->delivery_method)
+                    ->visible(fn ($record) => $record->status === 'Ready'),
+                Tables\Actions\Action::make('generate_invoice')
+                    ->action(function (Transaction $record) {
+                        $pdf = Pdf::loadView('invoices.template', [
+                            'transaction' => $record
+                        ])
+                            ->setOption('enable-local-file-access', true)
+                            ->setOption('user-style-sheet', public_path('css/app.css'));
+
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->output();
+                        }, "Invoice-{$record->transaction_id}.pdf");
+                    })
+                    ->visible(fn ($record) => $record->status != 'To Be Confirmed'),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

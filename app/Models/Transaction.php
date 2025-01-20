@@ -12,9 +12,15 @@ class Transaction extends Model
         'to_be_confirmed' => 'To Be Confirmed',
         'payment_verified' => 'Payment Verified',
         'picking' => 'Picking',
-        'delivery' => 'Delivery',
+        'ready' => 'Ready',
+        'on_delivery' => 'On Delivery',
         'completed' => 'Completed',
         'cancelled' => 'Cancelled'
+    ];
+
+    public const DELIVERY_METHODS = [
+        'go_send' => 'Go Send',
+        'pickup' => 'Pickup',
     ];
 
     protected $fillable = [
@@ -27,7 +33,8 @@ class Transaction extends Model
         'subtotal',
         'shipping',
         'total',
-        'notes'
+        'notes',
+        'delivery_method',
     ];
 
     protected $guarded = ['id'];
@@ -37,6 +44,14 @@ class Transaction extends Model
         return Attribute::make(
             get: fn (string $value) => self::STATUS[$value] ?? "Unknown",
             set: fn (string $value) => array_key_exists($value, self::STATUS) ? $value : array_keys(self::STATUS)[0]
+        );
+    }
+
+    protected function deliveryMethod(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => self::DELIVERY_METHODS[$value] ?? "Unknown",
+            set: fn (string $value) => array_key_exists($value, self::DELIVERY_METHODS) ? $value : array_keys(self::DELIVERY_METHODS)[0]
         );
     }
 
@@ -67,4 +82,11 @@ class Transaction extends Model
         return $this->hasMany(ProductTransaction::class);
     }
 
+    public static function generateTransactionId(): string
+    {
+        $prefix = 'TRX';
+        $date = now()->format('Ymd');
+        $random = str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        return $prefix.$date.$random;
+    }
 }

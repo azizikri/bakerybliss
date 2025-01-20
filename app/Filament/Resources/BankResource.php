@@ -27,7 +27,7 @@ class BankResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('Name')
                     ->required()
-                    ->placeholder('Enter the name of the tag'),
+                    ->placeholder('Enter the name of the bank'),
             ]);
     }
 

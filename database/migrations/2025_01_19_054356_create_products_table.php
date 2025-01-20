@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('stock');
             $table->json('images');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->integer('price');
             $table->enum('size', array_keys(Product::SIZES))->default(array_keys(Product::SIZES)[0]);
             $table->tinyInteger('status')->default(0);
