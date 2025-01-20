@@ -50,8 +50,8 @@ class Transaction extends Model
     protected function deliveryMethod(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => self::DELIVERY_METHODS[$value] ?? "Unknown",
-            set: fn (string $value) => array_key_exists($value, self::DELIVERY_METHODS) ? $value : array_keys(self::DELIVERY_METHODS)[0]
+            get: fn (?string $value) => self::DELIVERY_METHODS[$value] ?? "Unknown",
+            set: fn (?string $value) => array_key_exists($value, self::DELIVERY_METHODS) ? $value : array_keys(self::DELIVERY_METHODS)[0]
         );
     }
 

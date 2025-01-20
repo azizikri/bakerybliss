@@ -69,18 +69,20 @@ class TransactionResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true),
 
-                Forms\Components\Select::make('status')
-                    ->options(array_combine(array_keys(Transaction::STATUS), Transaction::STATUS))
-                    ->default('to_be_confirmed')
-                    ->required()
-                    ->afterStateHydrated(function ($state) {
-                        return (string) $state;
-                    }),
+                // Forms\Components\Select::make('status')
+                //     ->options(array_combine(array_keys(Transaction::STATUS), Transaction::STATUS))
+                //     ->default('to_be_confirmed')
+                //     ->required()
+                //     ->afterStateHydrated(function ($state) {
+                //         return (string) $state;
+                //     }),
 
                 Forms\Components\TextInput::make('shipping')
                     ->numeric()
                     ->required()
-                    ->default(20000),
+                    ->default(20000)
+                    ->live()
+                    ->afterStateUpdated(fn (Forms\Set $set, Forms\Get $get) => static::updateTotals($set, $get)),
 
                 Forms\Components\Textarea::make('notes')
                     ->columnSpanFull(),
@@ -106,9 +108,10 @@ class TransactionResource extends Resource
                                     $set('quantity', 1);
                                     $set('price_on_purchase', $product->price);
                                     $set('sub_total', $product->price);
+                                    static::updateTotals($set, $get);
                                 }
                             })
-                            ->distinct(),
+                            ->rules(['distinct']),
 
                         Forms\Components\TextInput::make('quantity')
                             ->numeric()
@@ -121,6 +124,7 @@ class TransactionResource extends Resource
                                 $set('sub_total', $price * $state);
                                 static::updateTotals($set, $get);
                             }),
+
                         Forms\Components\TextInput::make('price_on_purchase')
                             ->numeric()
                             ->required()
@@ -131,6 +135,7 @@ class TransactionResource extends Resource
                                 $set('sub_total', $state * $quantity);
                                 static::updateTotals($set, $get);
                             }),
+
                         Forms\Components\TextInput::make('sub_total')
                             ->numeric()
                             ->required()
@@ -154,7 +159,6 @@ class TransactionResource extends Resource
                     ->required()
                     ->disabled()
                     ->dehydrated(true),
-
             ]);
     }
 
@@ -290,6 +294,4 @@ class TransactionResource extends Resource
         $set('../../subtotal', $subtotal);
         $set('../../total', $total);
     }
-
-
 }
