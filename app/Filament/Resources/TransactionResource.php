@@ -96,7 +96,9 @@ class TransactionResource extends Resource
                     ->relationship()
                     ->schema([
                         Forms\Components\Select::make('product_id')
-                            ->relationship('product', 'name')
+                            ->relationship('product', 'name', modifyQueryUsing: function (Builder $query) {
+                                $query->where('status', 1)->where('stock', '!=', value: 0);
+                            })
                             ->required()
                             ->preload()
                             ->searchable()
@@ -105,9 +107,10 @@ class TransactionResource extends Resource
                             ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                                 $product = Product::find($state);
                                 if ($product) {
-                                    $set('quantity', 1);
+                                    $stock = $product->stock;
+                                    $set('quantity', min(1, $stock));
                                     $set('price_on_purchase', $product->price);
-                                    $set('sub_total', $product->price);
+                                    $set('sub_total', $product->price * min(1, $stock));
                                     static::updateTotals($set, $get);
                                 }
                             })
@@ -120,9 +123,17 @@ class TransactionResource extends Resource
                             ->live()
                             ->columnSpan(3)
                             ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
-                                $price = $get('price_on_purchase');
-                                $set('sub_total', $price * $state);
-                                static::updateTotals($set, $get);
+                                $productId = $get('product_id');
+                                $product = Product::find($productId);
+                                if ($product) {
+                                    $stock = $product->stock;
+                                    if ($state > $stock) {
+                                        $set('quantity', $stock);
+                                    }
+                                    $price = $get('price_on_purchase');
+                                    $set('sub_total', $price * $get('quantity'));
+                                    static::updateTotals($set, $get);
+                                }
                             }),
 
                         Forms\Components\TextInput::make('price_on_purchase')
@@ -147,6 +158,7 @@ class TransactionResource extends Resource
                     ->columnSpanFull()
                     ->live()
                     ->grid(1),
+
 
                 Forms\Components\TextInput::make('subtotal')
                     ->numeric()
