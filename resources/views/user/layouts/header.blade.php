@@ -12,10 +12,21 @@
 
                 <div class="ul-header-top-right">
                     <div class="ul-header-auth-options">
-                        <i class="flaticon-user"></i>
-                        <a href="#">Login</a>
-                        <span>/</span>
-                        <a href="#">Register</a>
+                        @guest
+                            <i class="flaticon-user"></i>
+                            <a href="{{ route('login') }}">Login</a>
+                            <span>/</span>
+                            <a href="{{ route('register') }}">Register</a>
+                        @endguest
+                        @auth
+                            <i class="flaticon-user"></i>
+                            <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();">Logout</a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        @endauth
                     </div>
                 </div>
             </div>
