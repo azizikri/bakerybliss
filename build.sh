@@ -20,4 +20,4 @@ npm run build
 echo "[6/6] Migrating database"
 php artisan migrate --force
 
-echo "The app has been built and deployed!!"
+echo "The app has been built and deployed!"
