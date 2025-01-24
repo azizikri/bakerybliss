@@ -30,5 +30,13 @@ jobs:
         run: npm run build
       - name: Run migrations
         run: php artisan migrate
-      # - name: Run tests
-      #   run: ./vendor/bin/phpstan
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          # key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.APP_PATH }}
+            ./build.sh
