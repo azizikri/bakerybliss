@@ -125,6 +125,9 @@
                             <h2 class="ul-menus-title-txt">{{ $product->name }}</h2>
                         </li>
                     @empty
+                        <li>
+                            <h2 class="ul-menus-title-txt">No Products</h2>
+                        </li>
                     @endforelse
                 </ul>
             </div>
