@@ -4,8 +4,8 @@
             <div class="ul-header-container">
                 <div class="ul-header-top-left">
                     <div class="ul-header-contact-infos">
-                        <span class="ul-header-contact-info"><i class="flaticon-location-pin colored"></i> Depok,
-                            Kelapa Dua, Indonesia</span>
+                        <span class="ul-header-contact-info"><i class="flaticon-location-pin colored"></i> Jl. Vila Dago
+                            Raya, Pd. Benda, Tangerang, Kota Tangerang Selatan</span>
                     </div>
                 </div>
 
@@ -48,8 +48,8 @@
                         <nav class="ul-header-nav">
                             <a href="{{ route('home') }}">Home</a>
                             <a href="{{ route('catalog.index') }}">Catalog</a>
-                            <a href="about.html">About Us</a>
-                            <a href="contact.html">Contact</a>
+                            <a href="{{ route('about-us') }}">About Us</a>
+                            <a href="{{ route('contact') }}">Contact</a>
                             {{-- <div class="has-sub-menu">
                                 <a role="button">Shop</a>
 

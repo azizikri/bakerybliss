@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -11,8 +13,10 @@ Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index
 Route::get('/catalog/detail/{product}', [CatalogController::class, 'show'])->name('catalog.show')->middleware('auth');
 Route::get('/cart', CartController::class)->name('cart.index')->middleware('auth');
 Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('cart.add')->middleware('auth');
-Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
-Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update')->middleware('auth');
+Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove')->middleware('auth');
+Route::get('/about-us', AboutUsController::class)->name('about-us');
+Route::get('/contact', ContactController::class)->name('contact');
 
 
 

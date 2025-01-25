@@ -2,7 +2,6 @@
 @section('content')
     <!-- FOODS SECTION START -->
     <main>
-
         <section class="ul-foods-shop ul-section-spacing">
             <div class="ul-shop-container">
                 <div class="row ul-bs-row row-cols-lg-4 row-cols-md-3 row-cols-2 row-cols-xxs-1">
