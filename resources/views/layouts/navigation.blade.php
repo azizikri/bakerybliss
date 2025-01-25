@@ -5,10 +5,8 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex items-center shrink-0">
-                    <a href="{{ route('dashboard') }}">
-                        {{-- <x-application-logo class="block w-auto text-gray-800 fill-current h-9" /> --}}
-                        <img src="{{ asset('user/img/logo.png') }}" alt="logo" class="logo" />
-                    </a>
+                    {{-- <x-application-logo class="block w-auto text-gray-800 fill-current h-9" /> --}}
+                    <img src="{{ asset('user/img/logo.png') }}" alt="logo" class="logo" />
                 </div>
 
                 <!-- Navigation Links -->

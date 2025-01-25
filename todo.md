@@ -29,6 +29,7 @@
 -   product details✅
 -   shopping cart✅
 -   checkout (with delivery methods, prohibit if not in open hours)
+    -   user upload payment
 -   checkout popup bank
 -   my orders
 -   about us✅

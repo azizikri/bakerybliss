@@ -1,33 +1,49 @@
 <?php
 
-use App\Http\Controllers\AboutUsController;
-use App\Http\Controllers\CatalogController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{CartController,
+    HomeController,
+    AboutUsController,
+    AccountController,
+    AddressController,
+    CatalogController,
+    ContactController,
+    ProfileController,
+    TransactionController
+};
 
+// Public routes
 Route::get('/', HomeController::class)->name('home');
-Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
-Route::get('/catalog/detail/{product}', [CatalogController::class, 'show'])->name('catalog.show')->middleware('auth');
-Route::get('/cart', CartController::class)->name('cart.index')->middleware('auth');
-Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('cart.add')->middleware('auth');
-Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update')->middleware('auth');
-Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove')->middleware('auth');
 Route::get('/about-us', AboutUsController::class)->name('about-us');
 Route::get('/contact', ContactController::class)->name('contact');
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 
+// Authenticated routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Profile management
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 
+    // Catalog protected routes
+    Route::get('/catalog/detail/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    // Shopping cart
+    Route::prefix('cart')->group(function () {
+        Route::get('/', CartController::class)->name('cart.index');
+        Route::post('/add/{product}', [CartController::class, 'addToCart'])->name('cart.add');
+        Route::post('/update', [CartController::class, 'updateCart'])->name('cart.update');
+        Route::post('/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Resource routes
+    Route::resources([
+        'addresses' => AddressController::class,
+        'accounts' => AccountController::class,
+        'transactions' => TransactionController::class,
+    ]);
 });
 
 require __DIR__.'/auth.php';
