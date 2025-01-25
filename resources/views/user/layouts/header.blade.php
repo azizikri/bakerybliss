@@ -37,7 +37,7 @@
         <div class="ul-header-bottom">
             <div class="ul-header-bottom-wrapper ul-header-container">
                 <div class="logo-container">
-                    <a href="index.html" class="d-inline-block"><img src="{{ asset('user/img/logo.png') }}"
+                    <a href="{{ route('home') }}" class="d-inline-block"><img src="{{ asset('user/img/logo.png') }}"
                             alt="logo" class="logo" /></a>
                 </div>
 
@@ -45,8 +45,8 @@
                 <div class="ul-header-nav-wrapper">
                     <div class="to-go-to-sidebar-in-mobile">
                         <nav class="ul-header-nav">
-                            <a href="index.html">Home</a>
-                            <a href="about.html">Catalog</a>
+                            <a href="{{ route('home') }}">Home</a>
+                            <a href="{{ route('catalog.index') }}">Catalog</a>
                             <a href="about.html">About Us</a>
                             <a href="contact.html">Contact</a>
                             {{-- <div class="has-sub-menu">
@@ -95,9 +95,6 @@
 
                 <!-- actions -->
                 <div class="ul-header-actions">
-                    <button class="ul-header-search-opener">
-                        <i class="flaticon-search"></i>
-                    </button>
                     <button><i class="flaticon-grocery-store"></i></button>
                     <a href="shop.html" class="ul-btn d-sm-inline-flex d-none">order now <i
                             class="flaticon-right"></i></a>
