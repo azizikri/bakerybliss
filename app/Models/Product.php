@@ -31,7 +31,8 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'images' => 'array'
+        'images' => 'array',
+        'status' => 'boolean'
     ];
 
     protected function status(): Attribute
@@ -87,6 +88,6 @@ class Product extends Model
 
     public function getThumbnailAttribute()
     {
-        return $this->images[0];
+        return asset($this->images[0]);
     }
 }

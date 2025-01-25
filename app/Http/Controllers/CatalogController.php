@@ -25,4 +25,15 @@ class CatalogController extends Controller
             'products' => $products
         ]);
     }
+
+    public function show(Product $product)
+    {
+        if (! $product->getRawOriginal('status')) {
+            abort(404);
+        }
+
+        return view('user.shop-details', [
+            'product' => $product
+        ]);
+    }
 }
