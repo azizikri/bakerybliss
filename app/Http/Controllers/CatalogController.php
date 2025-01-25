@@ -12,12 +12,10 @@ class CatalogController extends Controller
      */
     public function index(Request $request)
     {
-        $products = cache()->remember('products', now()->addDay(), function () {
-            return Product::query()
-                ->where('stock', '!=', 0)
-                ->where('status', 1)
-                ->paginate(12);
-        });
+        $products = Product::query()
+            ->where('stock', '!=', 0)
+            ->where('status', 1)
+            ->paginate(12);
 
         return view('user.shop', [
             'products' => $products

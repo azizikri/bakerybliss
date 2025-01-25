@@ -7,20 +7,22 @@
                 <!-- single menu item -->
                 @forelse ($products as $product)
                     <div class="col">
-                        <div class="ul-food">
-                            <div class="ul-food-img">
-                                <img src="{{ $product->thumbnail }}" alt="food Image" />
+                        <a href="{{ route('catalog.show', $product->id) }}">
+                            <div class="ul-food">
+                                <div class="ul-food-img">
+                                    <img src="{{ $product->thumbnail }}" alt="food Image" />
+                                </div>
+                                <div class="ul-food-txt">
+                                    <a href="shop-details.html" class="ul-food-title">{{ $product->name }}</a>
+                                    <p class="ul-food-sub-title">
+                                        {{ $product->description ?? '' }}
+                                    </p>
+                                    <button class="ul-food-add-to-cart-btn">
+                                        <i class="flaticon-cart"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="ul-food-txt">
-                                <a href="shop-details.html" class="ul-food-title">{{ $product->name }}</a>
-                                <p class="ul-food-sub-title">
-                                    {{ $product->description ?? '' }}
-                                </p>
-                                <button class="ul-food-add-to-cart-btn">
-                                    <i class="flaticon-cart"></i>
-                                </button>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 @empty
                     <h1>No Product</h1>
@@ -28,7 +30,7 @@
             </div>
 
             <!-- PAGINATION START -->
-            {{ $products->links() }}
+            {!! $products->links() !!}
             <!-- PAGINATION END -->
         </div>
     </section>

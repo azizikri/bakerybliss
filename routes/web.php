@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'index'])->name('catalog.show');
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
