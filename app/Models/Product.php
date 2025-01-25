@@ -42,13 +42,13 @@ class Product extends Model
         );
     }
 
-    protected function price(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => "Rp ".number_format($value, 0, ',', '.'),
-            set: fn (string $value) => (int) preg_replace('/[^0-9]/', '', $value),
-        );
-    }
+    // protected function price(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn (string $value) => "Rp ".number_format($value, 0, ',', '.'),
+    //         set: fn (string $value) => (int) preg_replace('/[^0-9]/', '', $value),
+    //     );
+    // }
 
     protected function size(): Attribute
     {

@@ -6,12 +6,14 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Product;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TransactionResource\Pages;
 
@@ -107,10 +109,9 @@ class TransactionResource extends Resource
                             ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                                 $product = Product::find($state);
                                 if ($product) {
-                                    $stock = $product->stock;
-                                    $set('quantity', min(1, $stock));
+                                    $set('quantity', 1);
                                     $set('price_on_purchase', $product->price);
-                                    $set('sub_total', $product->price * min(1, $stock));
+                                    $set('sub_total', $product->price);
                                     static::updateTotals($set, $get);
                                 }
                             })
@@ -126,12 +127,13 @@ class TransactionResource extends Resource
                                 $productId = $get('product_id');
                                 $product = Product::find($productId);
                                 if ($product) {
-                                    $stock = $product->stock;
-                                    if ($state > $stock) {
-                                        $set('quantity', $stock);
+                                    if ($state > $product->stock) {
+                                        $set('quantity', $product->stock);
+                                        $state = $product->stock;
                                     }
+
                                     $price = $get('price_on_purchase');
-                                    $set('sub_total', $price * $get('quantity'));
+                                    $set('sub_total', $price * $state);
                                     static::updateTotals($set, $get);
                                 }
                             }),
@@ -306,4 +308,5 @@ class TransactionResource extends Resource
         $set('../../subtotal', $subtotal);
         $set('../../total', $total);
     }
+
 }
