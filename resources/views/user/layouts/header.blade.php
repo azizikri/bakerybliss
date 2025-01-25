@@ -50,46 +50,6 @@
                             <a href="{{ route('catalog.index') }}">Catalog</a>
                             <a href="{{ route('about-us') }}">About Us</a>
                             <a href="{{ route('contact') }}">Contact</a>
-                            {{-- <div class="has-sub-menu">
-                                <a role="button">Shop</a>
-
-                                <div class="ul-header-submenu">
-                                    <ul>
-                                        <li><a href="shop.html">Shop</a></li>
-                                        <li><a href="shop-details.html">Shop Details</a></li>
-                                        <li><a href="cart.html">Cart</a></li>
-                                        <li><a href="checkout.html">Checkout</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="has-sub-menu">
-                                <a role="button">Pages</a>
-
-                                <div class="ul-header-submenu">
-                                    <ul>
-                                        <li><a href="menu-1.html">Menu Style 1</a></li>
-                                        <li><a href="menu-2.html">Menu Style 2</a></li>
-                                        <li><a href="reservation.html">Reservation</a></li>
-                                        <li><a href="services.html">Services</a></li>
-                                        <li><a href="chef.html">Our Chef</a></li>
-                                        <li><a href="gallery.html">Gallery</a></li>
-                                        <li><a href="testimonials.html">Testimonials</a></li>
-                                        <li><a href="faq.html">FAQ</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="has-sub-menu">
-                                <a role="button">Blog</a>
-
-                                <div class="ul-header-submenu">
-                                    <ul>
-                                        <li><a href="blog.html">Blogs</a></li>
-
-                                        <li><a href="blog-details.html">Blog Details</a></li>
-                                    </ul>
-                                </div>
-                            </div> --}}
                         </nav>
                     </div>
                 </div>
