@@ -4,9 +4,8 @@
             <div class="ul-header-container">
                 <div class="ul-header-top-left">
                     <div class="ul-header-contact-infos">
-                        <span class="ul-header-contact-info"><i class="flaticon-location-pin colored"></i> Rd. Santa
-                            Ana,
-                            Illinois 85486, United States</span>
+                        <span class="ul-header-contact-info"><i class="flaticon-location-pin colored"></i> Depok,
+                            Kelapa Dua, Indonesia</span>
                     </div>
                 </div>
 
@@ -20,6 +19,8 @@
                         @endguest
                         @auth
                             <i class="flaticon-user"></i>
+                            <a href="{{ route('profile.edit') }}">Profile</a>
+                            <span>/</span>
                             <a href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">Logout</a>
@@ -95,8 +96,8 @@
 
                 <!-- actions -->
                 <div class="ul-header-actions">
-                    <button><i class="flaticon-grocery-store"></i></button>
-                    <a href="shop.html" class="ul-btn d-sm-inline-flex d-none">order now <i
+                    <a href="{{ route('cart.index') }}"><i class="flaticon-grocery-store"></i></a>
+                    <a href="{{ route('catalog.index') }}" class="ul-btn d-sm-inline-flex d-none">order now <i
                             class="flaticon-right"></i></a>
                     <button class="ul-header-sidebar-opener d-lg-none d-inline-flex">
                         <i class="flaticon-menu"></i>

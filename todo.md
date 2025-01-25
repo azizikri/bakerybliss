@@ -23,14 +23,13 @@
 
 ## User
 
--   auth
--   user profile
+-   user profile ✅ kurang address sama bank
 -   home (with monthly winner product) ✅
 -   catalog ✅
--   product details
--   shopping cart
+-   product details✅
+-   shopping cart✅
 -   checkout (with delivery methods, prohibit if not in open hours)
 -   checkout popup bank
 -   my orders
--   about us
--   contact
+-   about us✅
+-   contact✅
