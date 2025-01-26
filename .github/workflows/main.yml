@@ -38,5 +38,4 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           # key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ${{ secrets.APP_PATH }}
-            ./build.sh
+            ./var/www/bakerybliss/build.sh
