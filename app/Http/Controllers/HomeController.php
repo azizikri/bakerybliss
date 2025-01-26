@@ -16,6 +16,8 @@ class HomeController extends Controller
         $popularProducts = Product::query()
             ->withCount('transactions')
             ->orderBy('transactions_count', 'desc')
+            ->where('status', 1)
+            ->where('stock', '>', 0)
             ->limit(5)
             ->get();
 
@@ -32,6 +34,8 @@ class HomeController extends Controller
 
         $firstTagProducts = $usedTags->isEmpty() ? Product::query()->limit(8)->get() : Product::query()
             ->whereRelation('tags', 'name', $usedTags->first()->name)
+            ->where('status', 1)
+            ->where('stock', '>', 0)
             ->limit(8)
             ->get();
 

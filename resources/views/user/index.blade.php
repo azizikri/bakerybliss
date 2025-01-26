@@ -101,7 +101,6 @@
                     @empty
                     @endforelse
                 </div>
-
                 <div class="ul-foods-slider-pagination d-none"></div>
             </div>
         </div>
