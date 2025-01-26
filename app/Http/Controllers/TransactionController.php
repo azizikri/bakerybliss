@@ -23,6 +23,10 @@ class TransactionController extends Controller
 
     public function show(Transaction $transaction)
     {
+        if ($transaction->user_id !== Auth::id()) {
+            abort(404);
+        }
+
         $transaction->load(['products.product', 'address', 'account']);
         return view('user.transactions.show', compact('transaction'));
     }
@@ -81,6 +85,10 @@ class TransactionController extends Controller
 
     public function update(Request $request, Transaction $transaction)
     {
+        if ($transaction->user_id !== Auth::id()) {
+            abort(404);
+        }
+
         $validated = $request->validate([
             'payment_proof' => 'sometimes|file|mimes:jpeg,png,pdf|max:2048',
         ]);
@@ -96,7 +104,9 @@ class TransactionController extends Controller
 
     public function invoice(Transaction $transaction)
     {
-        $this->authorize('view', $transaction);
+        if ($transaction->user_id !== Auth::id()) {
+            abort(404);
+        }
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('user.transactions.invoice', [
             'transaction' => $transaction->load(['user', 'address', 'account'])
