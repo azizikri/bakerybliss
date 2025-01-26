@@ -85,7 +85,8 @@
                                         {{ $product->description }}
                                     </p>
                                     <div class="ul-food-bottom">
-                                        <h4 style="text-align: center;"><span class="number">{{ $product->price }}</span>
+                                        <h4 style="text-align: center;"><span class="number"> Rp.
+                                                {{ number_format($product->price_on_purchase, 2, ',', '.') }}</span>
                                         </h4>
                                     </div>
                                     <form action="{{ route('cart.add', $product->id) }}" method="POST" class="d-inline">
@@ -150,8 +151,8 @@
                                 <span class="txt">{{ $tag->name }}</span>
                             </button>
                         @empty
+                            <span class="txt">Tags does not exists</span>
                         @endforelse
-                        <span class="txt">Tags does not exists</span>
                     @endforelse
                 </div>
 
@@ -172,7 +173,8 @@
                                                 <span class="ul-menu-item-sub-title">{{ $product->description }}</span>
                                                 <!-- <span class="stroke"></span> -->
                                             </div>
-                                            <span class="ul-menu-item-price">{{ $product->price }}</span>
+                                            <span class="ul-menu-item-price"> Rp.
+                                                {{ number_format($product->price_on_purchase, 2, ',', '.') }}</span>
                                         </div>
                                     </div>
                                 </div>

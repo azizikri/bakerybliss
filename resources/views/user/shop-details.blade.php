@@ -25,7 +25,8 @@
 
                                 <!-- price -->
                                 <div class="right">
-                                    <span class="ul-shop-details-price">{{ 'Rp.' . $product->price }}</span>
+                                    <span class="ul-shop-details-price"> Rp.
+                                        {{ number_format($product->price_on_purchase, 2, ',', '.') }}</span>
                                 </div>
                             </div>
 
