@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
@@ -88,6 +89,6 @@ class Product extends Model
 
     public function getThumbnailAttribute()
     {
-        return asset($this->images[0]);
+        return asset(Storage::url($this->images[0]));
     }
 }
