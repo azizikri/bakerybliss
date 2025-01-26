@@ -32,12 +32,13 @@ class HomeController extends Controller
 
         $tags = Tag::query()->get('name');
 
-        $firstTagProducts = $usedTags->isEmpty() ? Product::query()->limit(8)->get() : Product::query()
-            ->whereRelation('tags', 'name', $usedTags->first()->name)
-            ->where('status', 1)
-            ->where('stock', '>', 0)
-            ->limit(8)
-            ->get();
+        $firstTagProducts = $usedTags->isEmpty() ? Product::query()->where('status', 1)
+            ->where('stock', '>', 0)->limit(8)->get() : Product::query()
+                ->whereRelation('tags', 'name', $usedTags->first()->name)
+                ->where('status', 1)
+                ->where('stock', '>', 0)
+                ->limit(8)
+                ->get();
 
         return view('user.index', [
             'popularProducts' => $popularProducts,

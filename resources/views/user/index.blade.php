@@ -123,15 +123,11 @@
         <div class="ul-menus-title-slider splide">
             <div class="splide__track">
                 <ul class="splide__list">
-                    @forelse ($popularProducts as $product)
+                    @foreach ($popularProducts as $product)
                         <li class="splide__slide">
                             <h2 class="ul-menus-title-txt">{{ $product->name }}</h2>
                         </li>
-                    @empty
-                        <li>
-                            <h2 class="ul-menus-title-txt">No Products</h2>
-                        </li>
-                    @endforelse
+                    @endforeach
                 </ul>
             </div>
         </div>
