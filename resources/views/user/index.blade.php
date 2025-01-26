@@ -86,7 +86,7 @@
                                     </p>
                                     <div class="ul-food-bottom">
                                         <h4 style="text-align: center;"><span class="number"> Rp.
-                                                {{ number_format($product->price_on_purchase, 2, ',', '.') }}</span>
+                                                {{ number_format($product->price, 2, ',', '.') }}</span>
                                         </h4>
                                     </div>
                                     <form action="{{ route('cart.add', $product->id) }}" method="POST" class="d-inline">
@@ -174,7 +174,7 @@
                                                 <!-- <span class="stroke"></span> -->
                                             </div>
                                             <span class="ul-menu-item-price"> Rp.
-                                                {{ number_format($product->price_on_purchase, 2, ',', '.') }}</span>
+                                                {{ number_format($product->price, 2, ',', '.') }}</span>
                                         </div>
                                     </div>
                                 </div>
