@@ -11,6 +11,7 @@ class Transaction extends Model
     public const STATUS = [
         'to_be_confirmed' => 'To Be Confirmed',
         'payment_verified' => 'Payment Verified',
+        'reupload_payment' => 'Reupload Payment',
         'picking' => 'Picking',
         'ready' => 'Ready',
         'on_delivery' => 'On Delivery',

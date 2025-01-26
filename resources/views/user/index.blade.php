@@ -60,10 +60,10 @@
                 <div>
                     <span class="ul-section-sub-title">
                         <i class="flaticon-tray"></i>
-                        <span class="txt">Best Food</span>
+                        <span class="txt">Best Product</span>
                         <i class="flaticon-tray"></i>
                     </span>
-                    <h2 class="ul-section-title">Popular Food Items</h2>
+                    <h2 class="ul-section-title">Popular Product Items</h2>
                 </div>
             </div>
         </div>
@@ -88,9 +88,12 @@
                                         <h4 style="text-align: center;"><span class="number">{{ $product->price }}</span>
                                         </h4>
                                     </div>
-                                    <button class="ul-food-add-to-cart-btn">
-                                        <i class="flaticon-cart"></i>
-                                    </button>
+                                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="ul-food-add-to-cart-btn">
+                                            <i class="flaticon-cart"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +167,7 @@
                                         </div>
                                         <div class="ul-menu-item-txt">
                                             <div class="left">
-                                                <a href="shop-details.html"
+                                                <a href="{{ route('catalog.show', $product->id) }}"
                                                     class="ul-menu-item-title">{{ $product->name }}</a>
                                                 <span class="ul-menu-item-sub-title">{{ $product->description }}</span>
                                                 <!-- <span class="stroke"></span> -->

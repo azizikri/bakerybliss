@@ -40,6 +40,9 @@
                         <x-dropdown-link :href="route('home')">
                             {{ __('Home') }}
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('transactions.index')">
+                            {{ __('My Transaction') }}
+                        </x-dropdown-link>
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>

@@ -56,7 +56,10 @@
 
                 <!-- actions -->
                 <div class="ul-header-actions">
-                    <a href="{{ route('cart.index') }}"><i class="flaticon-grocery-store"></i></a>
+                    <a href="{{ route('cart.index') }}" class="nav-link d-flex">
+                        <i class="flaticon-cart"></i>
+                        <span class="cart-count">{{ count(session('cart', [])) }}</span>
+                    </a>
                     <a href="{{ route('catalog.index') }}" class="ul-btn d-sm-inline-flex d-none">order now <i
                             class="flaticon-right"></i></a>
                     <button class="ul-header-sidebar-opener d-lg-none d-inline-flex">

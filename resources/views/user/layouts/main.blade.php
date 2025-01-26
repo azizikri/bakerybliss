@@ -18,6 +18,7 @@
 
     <!-- custom CSS -->
     <link rel="stylesheet" href="{{ asset('user/css/style.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @stack('custom-styles')
 </head>
 
@@ -60,6 +61,8 @@
 
     <!-- custom JS -->
     <script src="{{ asset('user/js/main.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @stack('custom-scripts')
 </body>
 

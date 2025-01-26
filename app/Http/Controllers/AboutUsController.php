@@ -12,9 +12,7 @@ class AboutUsController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $products = cache()->remember('random-products', 60, function () {
-            return Product::inRandomOrder()->limit(5)->get('name');
-        });
+        $products = Product::inRandomOrder()->limit(5)->get('name');
 
         return view('user.about', [
             'products' => $products

@@ -63,6 +63,12 @@
                 </div>
             </div>
 
+            <div>
+                <div class="ul-cart-actions">
+                    <a href="{{ route('cart.index') }}"><button class="ul-cart-update-cart-btn">Update Cart</button></a>
+                </div>
+            </div>
+
             <div class="cart-bottom">
                 <div class="ul-cart-expense-overview">
                     <h3 class="ul-cart-expense-overview-title">Subtotal</h3>
@@ -83,21 +89,121 @@
                             <span class="number">Rp. {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
 
-                        <button class="ul-cart-checkout-direct-btn">CHECKOUT</button>
+                        {{-- Replace existing checkout button --}}
+                        <button class="ul-cart-checkout-direct-btn" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+                            CHECKOUT
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+    <!-- Add this before the closing </main> tag -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="py-4 text-center">
+                    <img src="{{ asset('user/img/bca.png') }}" alt="Bank Logo" class="mb-4" style="max-width: 150px;">
+                    <h3 class="mb-3">Account Number: 5657011148</h3>
+                    <h3 class="mb-3">A.N: FACHRAD ZAUHAR AWWAL</h3>
+                </div>
+                <form method="POST" action="{{ route('transactions.store') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Checkout Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Error Summary -->
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <input type="hidden" name="subtotal" value="{{ old('subtotal', $subtotal) }}">
+                        <input type="hidden" name="shipping" value="{{ old('shipping', $delivery) }}">
+                        <input type="hidden" name="total" value="{{ old('total', $total) }}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Shipping Address</label>
+                            <select name="address_id" class="form-select @error('address_id') is-invalid @enderror"
+                                required>
+                                @foreach ($addresses as $address)
+                                    <option value="{{ $address->id }}"
+                                        {{ old('address_id') == $address->id ? 'selected' : '' }}>
+                                        {{ $address->address }}, {{ $address->city }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('address_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Payment Account</label>
+                            <select name="account_id" class="form-select @error('account_id') is-invalid @enderror"
+                                required>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}"
+                                        {{ old('account_id') == $account->id ? 'selected' : '' }}>
+                                        {{ $account->bank->name }} - {{ $account->account_number }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('account_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Delivery Method</label>
+                            <select name="delivery_method"
+                                class="form-select @error('delivery_method') is-invalid @enderror" required>
+                                @foreach ($methods as $key => $method)
+                                    <option value="{{ $key }}"
+                                        {{ old('delivery_method') == $key ? 'selected' : '' }}>
+                                        {{ $method }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('delivery_method')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Payment Proof</label>
+                            <input type="file" name="payment_proof"
+                                class="form-control @error('payment_proof') is-invalid @enderror" accept="image/*,.pdf"
+                                required>
+                            @error('payment_proof')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn ul-btn">Complete Checkout</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
-@push('custom-styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-@endpush
 @push('custom-scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
+        $(document).ready(function() {
+            @if ($errors->any())
+                new bootstrap.Modal(document.getElementById('checkoutModal')).show();
+            @endif
+        });
         // Add this to your JS file or in a script tag
         $(document).ready(function() {
             // Update quantity

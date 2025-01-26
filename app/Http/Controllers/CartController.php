@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -26,32 +27,46 @@ class CartController extends Controller
             'subtotal' => $subtotal,
             'delivery' => $delivery,
             'total' => $total,
+            'addresses' => auth()->user()->addresses,
+            'accounts' => auth()->user()->accounts()->with('bank')->get(),
+            'methods' => Transaction::DELIVERY_METHODS
         ]);
     }
 
-    public function addToCart(Product $product)
+    public function addToCart(Product $product, Request $request)
     {
-        if (! $product) {
-            return redirect()->route('catalog.index')->with('error', 'Product not found!');
-        }
+        $request->validate([
+            'quantity' => 'nullable|integer|min:1'
+        ]);
+
+        $quantity = $request->quantity ?? 1;
 
         $cart = session()->get('cart', []);
 
         if (isset($cart[$product->id])) {
-            $cart[$product->id]['quantity']++;
-            $cart[$product->id]['subtotal'] = $product->price * $cart[$product->id]['quantity'];
+            $cart[$product->id]['quantity'] += $quantity;
         } else {
             $cart[$product->id] = [
                 'thumbnail' => $product->thumbnail,
                 'name' => $product->name,
-                'quantity' => 1,
+                'quantity' => $quantity,
                 'price' => $product->price,
-                'subtotal' => $product->price
+                'subtotal' => $product->price * $quantity
             ];
         }
+
+        $cart[$product->id]['subtotal'] = $cart[$product->id]['price'] * $cart[$product->id]['quantity'];
+
         session()->put('cart', $cart);
 
-        return redirect()->route('catalog.index')->with('success', 'Product added to cart successfully!');
+        $response = [
+            'message' => 'Product added to cart successfully!',
+            'cartCount' => count($cart)
+        ];
+
+        return $request->ajax()
+            ? response()->json($response)
+            : redirect()->back()->with($response);
     }
 
     public function updateCart(Request $request)

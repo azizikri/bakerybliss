@@ -13,6 +13,12 @@ class AccountController extends Controller
 {
     use AuthorizesRequests;
 
+    public function create()
+    {
+        $banks = Bank::all();
+        return view('user.accounts.create', compact('banks'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

@@ -44,6 +44,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'accounts' => AccountController::class,
         'transactions' => TransactionController::class,
     ]);
+
+    Route::get('/transactions/{transaction}/invoice', [TransactionController::class, 'invoice'])
+        ->name('transactions.invoice');
 });
 
 require __DIR__.'/auth.php';

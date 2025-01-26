@@ -14,12 +14,10 @@ class CatalogController extends Controller
     {
         $page = $request->has('page') ? $request->query('page') : 1;
 
-        $products = cache()->remember('products'.'_page_'.$page, now()->addDay(), function () {
-            return Product::query()
-                ->where('stock', '!=', 0)
-                ->where('status', 1)
-                ->paginate(12);
-        });
+        $products = Product::query()
+            ->where('stock', '!=', 0)
+            ->where('status', 1)
+            ->paginate(12);
 
         return view('user.shop', [
             'products' => $products

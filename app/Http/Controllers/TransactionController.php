@@ -15,14 +15,16 @@ class TransactionController extends Controller
 {
     use AuthorizesRequests;
 
-    public function create()
+    public function index()
     {
-        $addresses = Auth::user()->addresses;
-        $accounts = Auth::user()->accounts;
-        $statusOptions = Transaction::STATUS;
-        $deliveryMethods = Transaction::DELIVERY_METHODS;
+        $transactions = Auth::user()->transactions()->with(['address', 'account'])->get();
+        return view('user.transactions.index', compact('transactions'));
+    }
 
-        return view('transactions.create', compact('addresses', 'accounts', 'statusOptions', 'deliveryMethods'));
+    public function show(Transaction $transaction)
+    {
+        $transaction->load(['products.product', 'address', 'account']);
+        return view('user.transactions.show', compact('transaction'));
     }
 
     public function store(Request $request)
@@ -37,7 +39,6 @@ class TransactionController extends Controller
                 Rule::exists('accounts', 'id')->where('user_id', Auth::id()),
             ],
             'payment_proof' => 'required|file|mimes:jpeg,png,pdf|max:2048',
-            'status' => 'required|in:'.implode(',', array_keys(Transaction::STATUS)),
             'subtotal' => 'required|numeric',
             'shipping' => 'required|numeric',
             'total' => 'required|numeric',
@@ -45,26 +46,41 @@ class TransactionController extends Controller
             'delivery_method' => 'required|in:'.implode(',', array_keys(Transaction::DELIVERY_METHODS)),
         ]);
 
-        $filePath = $request->file('payment_proof')->store('payment_proofs', 'public');
-        $validated['payment_proof'] = $filePath;
-        $validated['transaction_id'] = Transaction::generateTransactionId();
-        $validated['user_id'] = Auth::id();
+        try {
+            $filePath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            $validated['payment_proof'] = $filePath;
+            $validated['transaction_id'] = Transaction::generateTransactionId();
+            $validated['user_id'] = Auth::id();
 
-        Transaction::create($validated);
-        return redirect()->route('transactions.index')->with('success', 'Transaction created.');
-    }
+            $cartItems = session()->get('cart', []);
 
-    public function edit(Transaction $transaction)
-    {
-        $this->authorize('update', $transaction);
+            $transaction = null;
+            \DB::transaction(function () use ($validated, $cartItems, &$transaction) {
+                $transaction = Transaction::create($validated);
 
-        return view('transactions.edit', compact('transaction'));
+                foreach ($cartItems as $productId => $item) {
+                    $transaction->products()->create([
+                        'product_id' => $productId,
+                        'quantity' => $item['quantity'],
+                        'price_on_purchase' => $item['price'],
+                        'sub_total' => $item['subtotal']
+                    ]);
+                }
+            });
+
+            session()->forget('cart');
+
+            return redirect()->route('transactions.index')
+                ->with('success', 'Transaction created successfully');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error processing transaction: '.$e->getMessage());
+        }
     }
 
     public function update(Request $request, Transaction $transaction)
     {
-        $this->authorize('update', $transaction);
-
         $validated = $request->validate([
             'payment_proof' => 'sometimes|file|mimes:jpeg,png,pdf|max:2048',
         ]);
@@ -76,5 +92,16 @@ class TransactionController extends Controller
 
         $transaction->update($validated);
         return redirect()->route('transactions.index')->with('success', 'Transaction updated.');
+    }
+
+    public function invoice(Transaction $transaction)
+    {
+        $this->authorize('view', $transaction);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('user.transactions.invoice', [
+            'transaction' => $transaction->load(['user', 'address', 'account'])
+        ]);
+
+        return $pdf->download("invoice-{$transaction->transaction_id}.pdf");
     }
 }
